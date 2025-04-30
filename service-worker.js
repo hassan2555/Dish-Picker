@@ -1,4 +1,4 @@
-const CACHE_NAME = 'dish-picker-cache-v2';
+const CACHE_NAME = 'dish-picker-cache-v1';
 const urlsToCache = [
   '/',
   '/index.html',
