@@ -1,51 +1,44 @@
 const CACHE_NAME = 'dish-picker-cache-v1';
 const urlsToCache = [
-  '/',
-  '/index.html',
-  '/styles.css',
-  '/script.js',
-  '/manifest.json',
-  '/icons/icon-192x192.png',
-  '/icons/icon-512x512.png',
-  'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css'
+  '/',                // root
+  '/index.html',      // main HTML
+  '/app.js?v=2',      // your versioned JS
+  '/manifest.json',   // PWA manifest
+  '/icon-192.png',    // icon must exist at exactly this path
+  '/icon-512.png'     // icon must exist at exactly this path
 ];
 
-// Install Service Worker
-self.addEventListener('install', (event) => {
+self.addEventListener('install', event => {
   event.waitUntil(
-    caches.open(CACHE_NAME)
-      .then((cache) => {
-        console.log('Opened cache');
-        return cache.addAll(urlsToCache);
-      })
-  );
-});
-
-// Fetch Data from Cache First, Network Fallback
-self.addEventListener('fetch', (event) => {
-  event.respondWith(
-    caches.match(event.request)
-      .then((cachedResponse) => {
-        if (cachedResponse) {
-          return cachedResponse;
-        }
-        return fetch(event.request);
-      })
-  );
-});
-
-// Activate Service Worker & Cleanup Old Cache
-self.addEventListener('activate', (event) => {
-  const cacheWhitelist = [CACHE_NAME];
-  event.waitUntil(
-    caches.keys().then((cacheNames) => {
+    caches.open(CACHE_NAME).then(cache => {
       return Promise.all(
-        cacheNames.map((cacheName) => {
-          if (!cacheWhitelist.includes(cacheName)) {
-            return caches.delete(cacheName);
+        urlsToCache.map(url =>
+          cache.add(url).catch(err => {
+            console.warn('Failed to cache', url, err);
+          })
+        )
+      );
+    }).then(() => self.skipWaiting())
+  );
+});
+
+self.addEventListener('activate', event => {
+  // Clean up old caches
+  event.waitUntil(
+    caches.keys().then(keys =>
+      Promise.all(
+        keys.map(key => {
+          if (key !== CACHE_NAME) {
+            return caches.delete(key);
           }
         })
-      );
-    })
+      )
+    )
+  );
+});
+
+self.addEventListener('fetch', event => {
+  event.respondWith(
+    caches.match(event.request).then(resp => resp || fetch(event.request))
   );
 });
