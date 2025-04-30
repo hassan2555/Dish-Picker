@@ -1,6 +1,10 @@
 {
-  "short_name": "Dish Picker",
-  "name": "Dish Picker with Top Pakistani Recipes",
+  "name": "Dish Picker",
+  "short_name": "DishPicker",
+  "start_url": ".",
+  "display": "standalone",
+  "background_color": "#121212",
+  "theme_color": "#00bcd4",
   "icons": [
     {
       "src": "icons/icon-192x192.png",
@@ -12,11 +16,5 @@
       "sizes": "512x512",
       "type": "image/png"
     }
-  ],
-  "start_url": "/index.html",
-  "background_color": "#121212",
-  "theme_color": "#00bcd4",
-  "display": "standalone",
-  "scope": "/",
-  "orientation": "portrait"
+  ]
 }
