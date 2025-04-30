@@ -14,6 +14,7 @@
       display: flex; flex-direction: column;
       align-items: center; justify-content: center;
       height: 100vh; margin: 0; text-align: center;
+      position: relative; /* Added this */
     }
     .spinner {
       display: none; margin: 20px;
@@ -35,9 +36,9 @@
       transform: translateX(-50%);
       z-index: 1000;
     }
-    .result { 
-      margin-top: 20px; 
-      font-size: 18px; 
+    .result {
+      margin-top: 20px;
+      font-size: 18px;
       text-align: left;
       max-width: 90%;
     }
@@ -53,11 +54,21 @@
     li { margin-bottom: 20px; }
     li strong { font-size: 20px; }
     li .meta { font-size: 14px; color: #999; }
+
+    /* Adding corner text */
+    .footer-text {
+      position: absolute;
+      bottom: 10px;
+      right: 10px;
+      font-size: 14px;
+      color: #bbb;
+      font-style: italic;
+    }
   </style>
 </head>
 <body>
 
-  <!-- 1️⃣ Custom Install Button -->
+  <!-- Install button shown only once -->
   <button id="btnInstall">📲 Install App</button>
 
   <h1>🍽️ Aaj kya pakayen?</h1>
@@ -68,48 +79,55 @@
   </div>
   <div class="date" id="date"></div>
 
+  <div class="footer-text">Created by Syed Hassan Ali</div> <!-- This is where the text is added -->
+
   <script>
-    // ─── YOUR DISH LOGIC ───────────────────────────────────
+    // ─── DISH & VIDEO LOGIC ─────────────────────────────────────────
     const dishes = `Achari Chicken, Achari Gosht, Aloo Baingan, Aloo Biryani, Aloo Cutlets,
-    …Zarda`.split(/,\s*/);
-    const channels = [ /* your channel IDs */ ];
+    Aloo Ghost, Aloo Gosht, Aloo Kabab, Aloo Ki Bhujiya, Aloo Matar Ka Salan, Aloo Methi,
+    Aloo Palak, Aloo Paratha, Aloo Qeema, Anda Aloo Curry, Anda Bhurji, Anda Chana,
+    Anda Curry, Anda Ka Salan, Anday Ka Salan, Anday Tori, Arhar Ki Daal,
+    Arvi Gosht, Arvi Ki Bhujiya, Baingan Ka Bharta, Baisan Ke Parathy, Beef Korma,
+    Beef Nihari, Beef Stew, Besan Ki Roti, Bhindi Gosht, Bhooni Hoe Moong Ki Daal,
+    Bhuna Gosht, Biryani, Chana Daal, Chana Masala, Chane Ki Daal Ki Qubooli,
+    Chapli Kabab, Chicken Achari Handi, Chicken Biryani, Chicken Curry, Chicken Haleem,
+    Chicken Handi, Chicken Jalfrezi, Chicken Karahi, Chicken Kofta, Chicken Pulao,
+    Chicken Qeema, Chicken Qorma, Chicken Shorba, Chicken Stew, Chicken Tehri,
+    Chicken White Handi, Cholay Biryani, Cholay Ka Salan, Custard, Daal Chawal,
+    Daal Fry, Daal Mash, Daal Moong, Dum Ka Qeema, Dahi Baray Roti, Fish Curry,
+    Gajar Matar, Garlic Bread With Fried Chicken, Haleem, Hinduiani Aloo, Kaddu Gosht,
+    Kaleji Masala, Karhi Chawal, Katakat, Khichri, Kheer, Kofta Curry, Koftay Aloo,
+    Kulfa Karhi, Loki Channe Ki Daal, Loki Gosht, Loki Ki Bhojiya, Makhni Handi,
+    Malaka Masoor Daal, Mangoria, Mangooriyo Ka Salan, Masoor Daal, Mash Daal,
+    Matar Paneer, Matar Pulao, Matar Qeema, Mix Sabzi, Moong Daal, Murg Cholay,
+    Mutton Biryani, Mutton Curry, Mutton Do Pyaza, Mutton Haleem, Mutton Karahi,
+    Mutton Pulao, MUTTON Salan, Nihari, Nargisi Kofta, Paltay, Paneer Qorma, Paya,
+    Qeema Karelay, Rajma, Roghni Naan, Saag, Saag Paneer, Sada Biryani, Shahi Qeema,
+    Shaljam Gosht, Shami Kabab, Shami Kabab Curry, Sheermal, Sashilik, Stoo, Taheri,
+    Timator Wali Masoor Ki Daal, Tikka Biryani, Tinday Gosht, Turnip Curry,
+    Tandoori Roti, Tawa Chicken, Tawa Keema, White Chicken Karahi, White Qorma,
+    Yakhni Pulao, Zarda`.split(/,\s*/);
+
+    const channels = [
+      'UC4oKG2wXw65aXk8qQqFb6NQ',
+      'UCwX5G6Uf9xYwJzqKq7wQ9Vg',
+      'UC6c_6QvOZRzY7Yq8J2X6Q1w',
+      'UCbV30Yw0eMWY-LqyHcN7QJg',
+      'UC5j8yEE9GZq3z5Y5yJ5QZ9g',
+      'UCX9ZvS-4Q5Zk5Q5ZQ5ZQ5ZQ',
+      'UCq6yvGQ3W7R6ZnU6Yw2Z8ZQ',
+      'UCX9ZvS-4Q5Zk5Q5ZQ5ZQ5ZQ'
+    ];
     const API_KEY = 'AIzaSyCa740ajzKVz-vmQTNKB3o_rnCN40Gz9dw';
 
-    async function fetchTopVideo(dish) { /* … */ }
-
-    document.getElementById('startBtn').onclick = async () => { /* … */ };
-
-    document.getElementById('date').textContent =
-      new Date().toLocaleDateString('en-GB', {
-        weekday:'long', day:'2-digit', month:'short', year:'numeric'
-      });
-
-    // ─── 2️⃣ REGISTER SERVICE WORKER + INSTALL PROMPT ─────────────────
-    if ('serviceWorker' in navigator) {
-      window.addEventListener('load', () => {
-        navigator.serviceWorker.register('./service-worker.js')
-          .then(reg => console.log('✅ SW Registered:', reg.scope))
-          .catch(err => console.log('❌ SW Registration Failed:', err));
-      });
-    }
-
-    // Handle the beforeinstallprompt event
-    let deferredPrompt;
-    const btnInstall = document.getElementById('btnInstall');
-
-    window.addEventListener('beforeinstallprompt', (e) => {
-      e.preventDefault();            // Prevent automatic prompt
-      deferredPrompt = e;            // Save the event
-      btnInstall.style.display = 'block'; // Show install button
-    });
-
-    btnInstall.addEventListener('click', async () => {
-      btnInstall.style.display = 'none';  // Hide our button
-      deferredPrompt.prompt();            // Show the install prompt
-      const { outcome } = await deferredPrompt.userChoice;
-      console.log('User choice:', outcome);
-      deferredPrompt = null;              // Clear saved event
-    });
-  </script>
-</body>
-</html>
+    async function fetchTopVideo(dish) {
+      for (let channelId of channels) {
+        const q = encodeURIComponent(dish + ' recipe');
+        const url =
+          `https://www.googleapis.com/youtube/v3/search?` +
+          `part=snippet&type=video&order=viewCount` +
+          `&channelId=${channelId}&q=${q}` +
+          `&maxResults=1&key=${API_KEY}`;
+        try {
+          let resp = await fetch(url);
+          let json = await resp.json();
