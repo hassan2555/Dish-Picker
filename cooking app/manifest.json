@@ -1,7 +1,7 @@
 {
   "name": "Pakistani Dish Picker",
   "short_name": "Dish Picker",
-  "start_url": "./index.html",
+  "start_url": "/",
   "display": "standalone",
   "background_color": "#121212",
   "theme_color": "#00bcd4",
