@@ -1,0 +1,74 @@
+/* Basic styles and toast bar */
+body {
+  background: #121212;
+  color: #fff;
+  font-family: sans-serif;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  height: 100vh; margin: 0; text-align: center;
+}
+
+.spinner {
+  display: none; margin: 20px;
+  width: 50px; height: 50px;
+  border: 6px solid #444; border-top: 6px solid #00bcd4;
+  border-radius: 50%; animation: spin 1s linear infinite;
+}
+
+@keyframes spin { to { transform: rotate(360deg); } }
+
+button {
+  background: #00bcd4; color: #fff;
+  padding: 10px 20px; font-size: 18px;
+  border: none; border-radius: 8px; cursor: pointer;
+}
+
+.result { margin-top: 20px; font-size: 18px; text-align: left; max-width: 90%; }
+.link { color: #4FC3F7; text-decoration: none; font-weight: bold; }
+.date { margin-top: 30px; font-size: 14px; color: #ccc; }
+
+ul { list-style: none; padding: 0; }
+li { margin-bottom: 20px; }
+li strong { font-size: 20px; }
+li .meta { font-size: 14px; color: #999; }
+
+.signature {
+  position: absolute;
+  bottom: 10px;
+  left: 10px;
+  font-size: 12px;
+  color: #fff;
+}
+
+.install-btn {
+  position: absolute;
+  bottom: 50px;
+  right: 10px;
+  background: #ff4081;
+}
+
+.toast-bar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  background: #00bcd4;
+  color: white;
+  font-size: 16px;
+  padding: 12px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  z-index: 9999;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+}
+
+.toast-bar button {
+  background: white;
+  color: #00bcd4;
+  font-weight: bold;
+  border: none;
+  padding: 6px 10px;
+  border-radius: 5px;
+  cursor: pointer;
+}
