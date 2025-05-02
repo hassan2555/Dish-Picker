@@ -58,6 +58,7 @@
       bottom: 50px;
       right: 10px;
       background: #ff4081;
+      display: none;
     }
   </style>
 </head>
@@ -73,10 +74,10 @@
   <div class="signature">Created by Syed Hassan Ali</div>
 
   <!-- Install Button -->
-  <button id="installBtn" class="install-btn" style="display: none;">Install App</button>
+  <button id="installBtn" class="install-btn">Install App</button>
 
   <script>
-    // Dish List and Channel Data
+    // Dish list + YouTube logic
     const dishes = `Achari Chicken, Achari Gosht, Aloo Baingan, Aloo Biryani, Aloo Cutlets, Aloo Ghost, Aloo Gosht, Aloo Kabab, Aloo Ki Bhujiya, Aloo Matar Ka Salan, Aloo Methi, Aloo Palak, Aloo Paratha, Aloo Qeema, Anda Aloo Curry, Anda Bhurji, Anda Chana, Anda Curry, Anda Ka Salan, Anda Qeema, Anday Ka Salan, Anday Tori, Arhar Ki Daal, Arvi Gosht, Arvi Ki Bhujiya, Baingan Ka Bharta, Baisan Ke Parathy, Beef Korma, Beef Nihari, Beef Stew, Besan Ki Roti, Bhindi Gosht, Bhooni Hoe Moong Ki Daal, Bhuna Gosht, Biryani, Chana Daal, Chana Masala, Chane Ki Daal Ki Qubooli, Chapli Kabab, Chicken Achari Handi, Chicken Biryani, Chicken Curry, Chicken Haleem, Chicken Handi, Chicken Jalfrezi, Chicken Karahi, Chicken Kofta, Chicken Pulao, Chicken Qeema, Chicken Qorma, Chicken Shorba, Chicken Stew, Chicken Tehri, Chicken White Handi, Cholay Biryani, Cholay Ka Salan, Custard, Daal Chawal, Daal Fry, Daal Mash, Daal Moong, Dum Ka Qeema, Dahi Baray Roti, Fish Curry, Gajar Matar, Garlic Bread With Fried Chicken, Haleem, Hinduiani Aloo, Kaddu Gosht, Kaleji Masala, Karhi Chawal, Katakat, Khichri, Kheer, Kofta Curry, Koftay Aloo, Kulfa Karhi, Loki Channe Ki Daal, Loki Gosht, Loki Ki Bhojiya, Makhni Handi, Malaka Masoor Daal, Mangoria, Mangooriyo Ka Salan, Masoor Daal, Mash Daal, Matar Paneer, Matar Pulao, Matar Qeema, Mix Sabzi, Moong Daal, Murg Cholay, Mutton Biryani, Mutton Curry, Mutton Do Pyaza, Mutton Haleem, Mutton Karahi, Mutton Pulao, MUTTON Salan, Nihari, Nargisi Kofta, Paltay, Paneer Qorma, Paya, Qeema Karelay, Rajma, Roghni Naan, Saag, Saag Paneer, Sada Biryani, Shahi Qeema, Shaljam Gosht, Shami Kabab, Shami Kabab Curry, Sheermal, Sashilik, Stoo, Taheri, Taftaan, Timator Wali Masoor Ki Daal, Tikka Biryani, Tinday Gosht, Turnip Curry, Tandoori Roti, Tawa Chicken, Tawa Keema, White Chicken Karahi, White Qorma, Yakhni Pulao, Zarda`.split(/,\s*/);
 
     const channels = [
@@ -92,16 +93,10 @@
 
     const API_KEY = 'AIzaSyCa740ajzKVz-vmQTNKB3o_rnCN40Gz9dw';
 
-    // Fetch top video for a dish from given channels
     async function fetchTopVideo(dish) {
       for (let channelId of channels) {
         const q = encodeURIComponent(dish + ' recipe');
-        const url =
-          `https://www.googleapis.com/youtube/v3/search?` +
-          `part=snippet&type=video&order=viewCount` +
-          `&channelId=${channelId}&q=${q}` +
-          `&maxResults=1&key=${API_KEY}`;
-
+        const url = `https://www.googleapis.com/youtube/v3/search?part=snippet&type=video&order=viewCount&channelId=${channelId}&q=${q}&maxResults=1&key=${API_KEY}`;
         try {
           let resp = await fetch(url);
           let json = await resp.json();
@@ -114,9 +109,7 @@
               url: `https://www.youtube.com/watch?v=${vid.id.videoId}`
             };
           }
-        } catch (e) {
-          // ignore error and try next channel
-        }
+        } catch {}
       }
       return {
         dish,
@@ -147,36 +140,49 @@
       `).join('')}</ul>`;
     };
 
-    document.getElementById('date').textContent = new Date().toLocaleDateString('en-GB', {
-      weekday: 'long', day: '2-digit', month: 'short', year: 'numeric'
-    });
+    document.getElementById('date').textContent =
+      new Date().toLocaleDateString('en-GB', {
+        weekday: 'long', day: '2-digit', month: 'short', year: 'numeric'
+      });
 
+    // INSTALL BUTTON LOGIC
     let deferredPrompt;
     const installBtn = document.getElementById('installBtn');
-    
+
     window.addEventListener('beforeinstallprompt', (e) => {
       e.preventDefault();
       deferredPrompt = e;
-      installBtn.style.display = 'block';
+
+      if (!localStorage.getItem('appInstalled')) {
+        installBtn.style.display = 'block';
+      }
     });
 
     installBtn.addEventListener('click', async () => {
-      deferredPrompt.prompt();
-      const { outcome } = await deferredPrompt.userChoice;
-      if (outcome === 'accepted') {
-        installBtn.style.display = 'none';
+      if (deferredPrompt) {
+        deferredPrompt.prompt();
+        const { outcome } = await deferredPrompt.userChoice;
+        if (outcome === 'accepted') {
+          installBtn.style.display = 'none';
+          localStorage.setItem('appInstalled', 'true');
+        }
+        deferredPrompt = null;
       }
-      deferredPrompt = null;
+    });
+
+    window.addEventListener('appinstalled', () => {
+      localStorage.setItem('appInstalled', 'true');
+      installBtn.style.display = 'none';
     });
   </script>
-  
-<script>
-  if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('./service-worker.js')
-      .then(() => console.log('✅ Service Worker Registered'))
-      .catch(error => console.log('❌ SW Registration Failed:', error));
-  }
-</script>
+
+  <script>
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('./service-worker.js')
+        .then(() => console.log('✅ Service Worker Registered'))
+        .catch(error => console.log('❌ SW Registration Failed:', error));
+    }
+  </script>
 
 </body>
 </html>
