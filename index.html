@@ -61,9 +61,38 @@
       margin-top: 10px;
       max-width: 80%;
     }
+    .toast-bar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      background: #00bcd4;
+      color: white;
+      font-size: 16px;
+      padding: 12px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      z-index: 9999;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+    }
+    .toast-bar button {
+      background: white;
+      color: #00bcd4;
+      font-weight: bold;
+      border: none;
+      padding: 6px 10px;
+      border-radius: 5px;
+      cursor: pointer;
+    }
   </style>
 </head>
 <body>
+
+  <div id="toastBar" class="toast-bar" style="display: none;">
+    📲 Install this app for quick access!
+    <button id="toastInstallBtn">Install</button>
+  </div>
 
   <h1>🍽️ Aaj kya pakayen?</h1>
   <div class="spinner" id="spinner"></div>
@@ -145,12 +174,28 @@
 
     let deferredPrompt;
     const installBtn = document.getElementById('installBtn');
+    const toastBar = document.getElementById('toastBar');
+    const toastInstallBtn = document.getElementById('toastInstallBtn');
 
     window.addEventListener('beforeinstallprompt', (e) => {
       e.preventDefault();
       deferredPrompt = e;
       if (!localStorage.getItem('appInstalled')) {
         installBtn.style.display = 'block';
+        toastBar.style.display = 'flex';
+      }
+    });
+
+    toastInstallBtn.addEventListener('click', async () => {
+      if (deferredPrompt) {
+        deferredPrompt.prompt();
+        const { outcome } = await deferredPrompt.userChoice;
+        if (outcome === 'accepted') {
+          localStorage.setItem('appInstalled', 'true');
+          installBtn.style.display = 'none';
+          toastBar.style.display = 'none';
+        }
+        deferredPrompt = null;
       }
     });
 
@@ -159,8 +204,9 @@
         deferredPrompt.prompt();
         const { outcome } = await deferredPrompt.userChoice;
         if (outcome === 'accepted') {
-          installBtn.style.display = 'none';
           localStorage.setItem('appInstalled', 'true');
+          installBtn.style.display = 'none';
+          toastBar.style.display = 'none';
         }
         deferredPrompt = null;
       }
@@ -169,6 +215,7 @@
     window.addEventListener('appinstalled', () => {
       localStorage.setItem('appInstalled', 'true');
       installBtn.style.display = 'none';
+      toastBar.style.display = 'none';
     });
   </script>
 
