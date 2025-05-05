@@ -6,8 +6,6 @@
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <link rel="manifest" href="manifest.json">
   <meta name="theme-color" content="#00bcd4">
-  
-  <!-- External CSS Link -->
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -20,17 +18,23 @@
   <h1>🍽️ Aaj kya pakayen?</h1>
   <div class="spinner" id="spinner"></div>
   <button id="startBtn">Start</button>
-  <div class="result" id="result">Press “Start” to get 3 dish ideas and recipe links.</div>
+  <div class="result" id="result">
+    Press “Start” to get 3 dish ideas and recipe links.
+  </div>
   <div class="note" id="note" style="display:none;">
-    Select the dish you're going to cook today, so we avoid showing it again this month and keep your meals exciting!
+    Select the dish you're going to cook today, so we avoid showing it again this month and
+    keep your meals exciting!
   </div>
   <div class="date" id="date"></div>
   <div class="signature">Created by Syed Hassan Ali</div>
   <button id="installBtn" class="install-btn" style="display: none;">Install App</button>
 
   <script>
-    const dishes = `Achari Chicken, Achari Gosht, Aloo Baingan, Aloo Biryani, Aloo Cutlets, Aloo Ghost, Aloo Gosht, Aloo Kabab, Aloo Ki Bhujiya, Aloo Matar Ka Salan, Aloo Methi, Aloo Palak, Aloo Paratha, Aloo Qeema, Anda Aloo Curry, Anda Bhurji, Anda Chana, Anda Curry, Anda Ka Salan, Anda Qeema, Anday Ka Salan, Anday Tori, Arhar Ki Daal, Arvi Gosht, Arvi Ki Bhujiya, Baingan Ka Bharta, Baisan Ke Parathy, Beef Korma, Beef Nihari, Beef Stew, Besan Ki Roti, Bhindi Gosht, Bhooni Hoe Moong Ki Daal, Bhuna Gosht, Biryani, Chana Daal, Chana Masala, Chane Ki Daal Ki Qubooli, Chapli Kabab, Chicken Achari Handi, Chicken Biryani, Chicken Curry, Chicken Haleem, Chicken Handi, Chicken Jalfrezi, Chicken Karahi, Chicken Kofta, Chicken Pulao, Chicken Qeema, Chicken Qorma, Chicken Shorba, Chicken Stew, Chicken Tehri, Chicken White Handi, Cholay Biryani, Cholay Ka Salan, Custard, Daal Chawal, Daal Fry, Daal Mash, Daal Moong, Dum Ka Qeema, Dahi Baray Roti, Fish Curry, Gajar Matar, Garlic Bread With Fried Chicken, Haleem, Hinduiani Aloo, Kaddu Gosht, Kaleji Masala, Karhi Chawal, Katakat, Khichri, Kheer, Kofta Curry, Koftay Aloo, Kulfa Karhi, Loki Channe Ki Daal, Loki Gosht, Loki Ki Bhojiya, Makhni Handi, Malaka Masoor Daal, Mangoria, Mangooriyo Ka Salan, Masoor Daal, Mash Daal, Matar Paneer, Matar Pulao, Matar Qeema, Mix Sabzi, Moong Daal, Murg Cholay, Mutton Biryani, Mutton Curry, Mutton Do Pyaza, Mutton Haleem, Mutton Karahi, Mutton Pulao, MUTTON Salan, Nihari, Nargisi Kofta, Paltay, Paneer Qorma, Paya, Qeema Karelay, Rajma, Roghni Naan, Saag, Saag Paneer, Sada Biryani, Shahi Qeema, Shaljam Gosht, Shami Kabab, Shami Kabab Curry, Sheermal, Sashilik, Stoo, Taheri, Taftaan, Timator Wali Masoor Ki Daal, Tikka Biryani, Tinday Gosht, Turnip Curry, Tandoori Roti, Tawa Chicken, Tawa Keema, White Chicken Karahi, White Qorma, Yakhni Pulao, Zarda`.split(/,\s*/);
+    // Your full dish list
+    const dishes = `Achari Chicken, Achari Gosht, Aloo Baingan, Aloo Biryani, Aloo Cutlets, Aloo Ghost, Aloo Gosht, Aloo Kabab, Aloo Ki Bhujiya, Aloo Matar Ka Salan, Aloo Methi, Aloo Palak, Aloo Paratha, Aloo Qeema, Anda Aloo Curry, Anda Bhurji, Anda Chana, Anda Curry, Anda Ka Salan, Anda Qeema, Anday Ka Salan, Anday Tori, Arhar Ki Daal, Arvi Gosht, Arvi Ki Bhujiya, Baingan Ka Bharta, Baisan Ke Parathy, Beef Korma, Beef Nihari, Beef Stew, Besan Ki Roti, Bhindi Gosht, Bhooni Hoe Moong Ki Daal, Bhuna Gosht, Biryani, Chana Daal, Chana Masala, Chane Ki Daal Ki Qubooli, Chapli Kabab, Chicken Achari Handi, Chicken Biryani, Chicken Curry, Chicken Haleem, Chicken Handi, Chicken Jalfrezi, Chicken Karahi, Chicken Kofta, Chicken Pulao, Chicken Qeema, Chicken Qorma, Chicken Shorba, Chicken Stew, Chicken Tehri, Chicken White Handi, Cholay Biryani, Cholay Ka Salan, Custard, Daal Chawal, Daal Fry, Daal Mash, Daal Moong, Dum Ka Qeema, Dahi Baray Roti, Fish Curry, Gajar Matar, Garlic Bread With Fried Chicken, Haleem, Hinduiani Aloo, Kaddu Gosht, Kaleji Masala, Karhi Chawal, Katakat, Khichri, Kheer, Kofta Curry, Koftay Aloo, Kulfa Karhi, Loki Channe Ki Daal, Loki Gosht, Loki Ki Bhojiya, Makhni Handi, Malaka Masoor Daal, Mangoria, Mangooriyo Ka Salan, Masoor Daal, Mash Daal, Matar Paneer, Matar Pulao, Matar Qeema, Mix Sabzi, Moong Daal, Murg Cholay, Mutton Biryani, Mutton Curry, Mutton Do Pyaza, Mutton Haleem, Mutton Karahi, Mutton Pulao, MUTTON Salan, Nihari, Nargisi Kofta, Paltay, Paneer Qorma, Paya, Qeema Karelay, Rajma, Roghni Naan, Saag, Saag Paneer, Sada Biryani, Shahi Qeema, Shaljam Gosht, Shami Kabab, Shami Kabab Curry, Sheermal, Sashilik, Stoo, Taheri, Taftaan, Timator Wali Masoor Ki Daal, Tikka Biryani, Tinday Gosht, Turnip Curry, Tandoori Roti, Tawa Chicken, Tawa Keema, White Chicken Karahi, White Qorma, Yakhni Pulao, Zarda`
+      .split(/,\s*/);
 
+    // Track selections per month
     const monthKey = new Date().toISOString().slice(0,7);
     const blocked = JSON.parse(localStorage.getItem(`selectedDishes-${monthKey}`) || '[]');
 
@@ -42,12 +46,31 @@
       }
     }
 
+    // ←── Your allowed Pakistani channel IDs ─────────→
+    const allowedChannels = [
+      "UCwX5G6Uf9xYwJzqKq7wQ9Vg",
+      "UCX9ZvS-4Q5Zk5Q5ZQ5ZQ5ZQ",
+      "UC5j8yEE9GZq3z5Y5yJ5QZ9g",
+      "UCbV30Yw0eMWY-LqyHcN7QJg",
+      "UC6c_6QvOZRzY7Yq8J2X6Q1w",
+      "UC4oKG2wXw65aXk8qQqFb6NQ",
+      "UCBINYCtEf3V5uzVbS7J8hoA"
+    ];
+
+    // Fetch the most-viewed video from those channels
     async function fetchTopVideo(dish) {
-      const url = `https://www.googleapis.com/youtube/v3/search?part=snippet&type=video&order=viewCount&q=${encodeURIComponent(dish + ' recipe Pakistani')}&maxResults=1&key=AIzaSyCa740ajzKVz-vmQTNKB3o_rnCN40Gz9dw`;
+      const query = encodeURIComponent(dish + ' recipe Pakistani');
+      const url = `https://www.googleapis.com/youtube/v3/search?` +
+                  `part=snippet&type=video&order=viewCount&maxResults=10` +
+                  `&q=${query}&key=AIzaSyCa740ajzKVz-vmQTNKB3o_rnCN40Gz9dw`;
+
       try {
         const res = await fetch(url);
         const data = await res.json();
-        const vid = data.items?.[0];
+        // find first item whose channelId matches
+        const vid = data.items?.find(item =>
+          allowedChannels.includes(item.snippet.channelId)
+        );
         if (vid) {
           return {
             dish,
@@ -56,15 +79,19 @@
             url: `https://www.youtube.com/watch?v=${vid.id.videoId}`
           };
         }
-      } catch {}
+      } catch (e) {
+        console.error('Video fetch failed:', e);
+      }
+      // fallback link
       return {
         dish,
         title: 'Search on YouTube',
         channel: '',
-        url: `https://www.youtube.com/results?search_query=${encodeURIComponent(dish + ' recipe Pakistani')}`
+        url: `https://www.youtube.com/results?search_query=${query}`
       };
     }
 
+    // Main button handler
     document.getElementById('startBtn').onclick = async () => {
       const spinner = document.getElementById('spinner');
       const result  = document.getElementById('result');
@@ -76,6 +103,7 @@
       await new Promise(r => setTimeout(r, 1500));
       spinner.style.display = 'none';
 
+      // pick 3 new dishes
       const filtered = dishes.filter(d => !blocked.includes(d));
       const pick = filtered.sort(() => 0.5 - Math.random()).slice(0, 3);
       const vids = await Promise.all(pick.map(fetchTopVideo));
@@ -85,16 +113,20 @@
           <strong>${v.dish}</strong><br>
           <a class="link" href="${v.url}" target="_blank">▶ ${v.title}</a><br>
           <span class="meta">${v.channel}</span><br>
-          <div class="dish-select"><button onclick="saveSelectedDish('${v.dish}')">I’m cooking this</button></div>
+          <div class="dish-select">
+            <button onclick="saveSelectedDish('${v.dish}')">I’m cooking this</button>
+          </div>
         </li>
       `).join('')}</ul>`;
       note.style.display = 'block';
     };
 
+    // show date
     document.getElementById('date').textContent = new Date().toLocaleDateString('en-GB', {
       weekday: 'long', day: '2-digit', month: 'short', year: 'numeric'
     });
 
+    // PWA install prompts (unchanged)
     let deferredPrompt;
     const installBtn = document.getElementById('installBtn');
     const toastBar = document.getElementById('toastBar');
@@ -140,9 +172,7 @@
       installBtn.style.display = 'none';
       toastBar.style.display = 'none';
     });
-  </script>
 
-  <script>
     if ('serviceWorker' in navigator) {
       navigator.serviceWorker.register('./service-worker.js')
         .then(() => console.log('✅ Service Worker Registered'))
